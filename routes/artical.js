@@ -7,6 +7,7 @@ const router = new Router();
 
 
 router.post('/write', artical.create);
+router.post('/list', artical.getList)
 
 
 module.exports = router
