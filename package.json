@@ -1,10 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "blog系统的服务端，koa + mongoose",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js",
+    "lint": "eslint --fix routes/ mongodb/ models/ controller/ config/"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,9 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^8.0.8",
     "mongoose": "^5.9.7"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0"
   }
 }
