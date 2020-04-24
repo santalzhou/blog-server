@@ -1,4 +1,5 @@
 const Artical = require('../models/artical');
+const url = require('url');
 const chalk = require('chalk');
 
 // 新增文章
@@ -22,11 +23,27 @@ const create = async (ctx, next) => {
   await next();
 };
 
-// 获取文章列表
+// 获取文章列表, 搜索
 const getList = async (ctx, next) => {
-  const page = ctx.request.body.page;
-  const pageSize = ctx.request.body.pageSize;
-  const number = await Artical.count();
+  console.log(chalk.yellow(JSON.stringify(ctx.request.url)))
+  let query = url.parse(ctx.request.url, true).query;
+  const page = query.page;
+  const pageSize = query.pageSize;
+  const search = query.search;
+  // console.log(chalk.red(page, pageSize, search));
+
+  let moduleQuery = null;
+  if(search){
+    moduleQuery = {"title": {$regex: search}};
+  }else{
+    moduleQuery = {};
+  }
+
+// console.log(JSON.stringify(moduleQuery), moduleQuery.count);
+
+  const number = await Artical.count(moduleQuery);
+  console.log(chalk.green(number));
+
   if (!number) {
     ctx.body = {
       success: true,
@@ -36,7 +53,7 @@ const getList = async (ctx, next) => {
     await next();
   } else {
     if (number > pageSize * (page - 1)) {
-      const list = await Artical.find().limit(pageSize).skip(pageSize * (page - 1));
+      const list = await Artical.find(moduleQuery).limit(Number(pageSize)).skip(pageSize * (page - 1)).sort({date: -1});
       if (list) {
         ctx.body = {
           success: true,
@@ -51,7 +68,26 @@ const getList = async (ctx, next) => {
   }
 };
 
+// 获取文章详情
+const getDetail = async (ctx, next) =>{
+  const id = ctx.request.url.split('?id=')[1];
+  const data = await Artical.findOne({_id: id});
+  if(!data){
+    ctx.body = {
+      success: false,
+      message: '文章查找失败'
+    }
+  }else{
+    ctx.body = {
+      success: true,
+      artical: data
+    }
+  }
+  await next();
+}
+
 module.exports = {
   create,
   getList,
+  getDetail
 };

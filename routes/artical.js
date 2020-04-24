@@ -6,7 +6,8 @@ const router = new Router();
 
 
 router.post('/write', artical.create);
-router.post('/list', artical.getList);
+router.get('/list', artical.getList); // get更合适
+router.get('/detail', artical.getDetail);
 
 
 module.exports = router;
