@@ -36,6 +36,5 @@ routes(app);
 
 app.listen(config.port, () => {
   console.log(chalk.green(`正在监听${config.port}端口`));
-
 });
 
